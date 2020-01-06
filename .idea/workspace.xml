@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9d22dfe7-7deb-4006-8f33-ef1926c5f872" name="Default Changelist" comment="" />
+    <list default="true" id="9d22dfe7-7deb-4006-8f33-ef1926c5f872" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/DefaultController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/DefaultController.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,6 +17,7 @@
     </execution>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="PhpWorkspaceProjectConfiguration">
@@ -77,6 +81,7 @@
     </include_path>
   </component>
   <component name="ProjectId" id="1ViiAmUHzPoaAkam7VRPPbPe7sR" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -126,7 +131,12 @@
       <workItem from="1577898284525" duration="1523000" />
       <workItem from="1577906018904" duration="7816000" />
       <workItem from="1577980288847" duration="4767000" />
-      <workItem from="1578005392268" duration="475000" />
+      <workItem from="1578005392268" duration="623000" />
+      <workItem from="1578060728085" duration="2017000" />
+      <workItem from="1578091470035" duration="1802000" />
+      <workItem from="1578252483277" duration="9996000" />
+      <workItem from="1578332891897" duration="8705000" />
+      <workItem from="1578346508754" duration="4253000" />
     </task>
     <servers />
   </component>
@@ -151,18 +161,20 @@
     </state>
     <state x="677" y="313" key="SettingsEditor/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1577916211141" />
     <state x="2597" y="313" key="SettingsEditor/1920.0.1920.1040/0.0.1920.1040@1920.0.1920.1040" timestamp="1577987303679" />
-    <state x="2565" y="355" key="com.intellij.ide.util.TipDialog" timestamp="1577980520969">
-      <screen x="1920" y="0" width="1920" height="1040" />
+    <state x="104" y="104" width="1582" height="702" key="com.intellij.ide.util.TipDialog" timestamp="1578347179476">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state x="645" y="355" key="com.intellij.ide.util.TipDialog/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1578332894610" />
     <state x="645" y="355" key="com.intellij.ide.util.TipDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1577906123077" />
-    <state x="2565" y="355" key="com.intellij.ide.util.TipDialog/1920.0.1920.1040/0.0.1920.1040@1920.0.1920.1040" timestamp="1577980520969" />
+    <state x="104" y="104" width="1582" height="702" key="com.intellij.ide.util.TipDialog/1920.0.1920.1040/0.0.1920.1040@1920.0.1920.1040" timestamp="1578347179476" />
     <state x="2188" y="181" width="1424" height="781" maximized="true" key="dock-window-1" timestamp="1577744681468">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="2188" y="181" width="1424" height="781" maximized="true" key="dock-window-1/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1577744681468" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1577915861233">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1578337776462">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1578337776462" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1577915861233" />
   </component>
 </project>
