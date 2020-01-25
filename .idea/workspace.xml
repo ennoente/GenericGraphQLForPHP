@@ -2,8 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9d22dfe7-7deb-4006-8f33-ef1926c5f872" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/generic-graphql-php.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/generic-graphql-php.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/bundles.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/bundles.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/DefaultController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/DefaultController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,6 +85,7 @@
       <path value="$PROJECT_DIR$/vendor/doctrine/orm" />
       <path value="$PROJECT_DIR$/vendor/doctrine/dbal" />
       <path value="$PROJECT_DIR$/vendor/doctrine/persistence" />
+      <path value="$PROJECT_DIR$/vendor/nelmio/cors-bundle" />
     </include_path>
   </component>
   <component name="ProjectId" id="1ViiAmUHzPoaAkam7VRPPbPe7sR" />
@@ -91,7 +99,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/Entity" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Documents/react-multipart-xhr" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
@@ -136,7 +144,15 @@
       <workItem from="1578091470035" duration="1802000" />
       <workItem from="1578252483277" duration="9996000" />
       <workItem from="1578332891897" duration="8705000" />
-      <workItem from="1578346508754" duration="4253000" />
+      <workItem from="1578346508754" duration="4337000" />
+      <workItem from="1578516680419" duration="3417000" />
+      <workItem from="1578760230463" duration="246000" />
+      <workItem from="1578843321669" duration="18403000" />
+      <workItem from="1578941642444" duration="9286000" />
+      <workItem from="1579371232093" duration="1839000" />
+      <workItem from="1579429932944" duration="6684000" />
+      <workItem from="1579699100713" duration="588000" />
+      <workItem from="1579957102184" duration="588000" />
     </task>
     <servers />
   </component>
@@ -152,6 +168,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="640" y="256" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1577789986732" />
+    <state x="2660" y="275" key="FileChooserDialogImpl" timestamp="1578846838409">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2660" y="275" key="FileChooserDialogImpl/1920.0.1920.1040/0.0.1920.1040@1920.0.1920.1040" timestamp="1578846838409" />
     <state x="695" y="339" key="NewPhpClassDialog" timestamp="1577742208827">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -161,20 +181,21 @@
     </state>
     <state x="677" y="313" key="SettingsEditor/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1577916211141" />
     <state x="2597" y="313" key="SettingsEditor/1920.0.1920.1040/0.0.1920.1040@1920.0.1920.1040" timestamp="1577987303679" />
-    <state x="104" y="104" width="1582" height="702" key="com.intellij.ide.util.TipDialog" timestamp="1578347179476">
+    <state x="159" y="131" width="1582" height="702" key="com.intellij.ide.util.TipDialog" timestamp="1579723887031">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="645" y="355" key="com.intellij.ide.util.TipDialog/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1578332894610" />
-    <state x="645" y="355" key="com.intellij.ide.util.TipDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1577906123077" />
-    <state x="104" y="104" width="1582" height="702" key="com.intellij.ide.util.TipDialog/1920.0.1920.1040/0.0.1920.1040@1920.0.1920.1040" timestamp="1578347179476" />
-    <state x="2188" y="181" width="1424" height="781" maximized="true" key="dock-window-1" timestamp="1577744681468">
+    <state x="159" y="131" key="com.intellij.ide.util.TipDialog/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579723887031" />
+    <state x="159" y="131" width="1582" height="702" key="com.intellij.ide.util.TipDialog/1920.0.1920.1040/0.0.1920.1040@1920.0.1920.1040" timestamp="1579430311943" />
+    <state x="2451" y="0" width="752" height="1021" key="dock-window-1" timestamp="1579462388371">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2188" y="181" width="1424" height="781" maximized="true" key="dock-window-1/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1577744681468" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1578337776462">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="2451" y="0" width="752" height="1021" key="dock-window-1/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1579462388371" />
+    <state x="2543" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1578519863237">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1578337776462" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1577915861233" />
+    <state x="2543" y="225" width="672" height="678" key="search.everywhere.popup/1920.0.1920.1040/0.0.1920.1040@1920.0.1920.1040" timestamp="1578519863237" />
   </component>
 </project>

@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 
+use Doctrine\DBAL\DriverManager;
 use GraphQL\Language\Parser;
 use GraphQL\Language\Source;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,9 +28,122 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route(path="/graphql", methods={"POST"})
+     * @Route(path="/filter", methods={"POST"})
      */
-    public function handleGraphQL(Request $request)
+    public function filter(Request $request)
+    {
+        $connection = DriverManager::getConnection(array("driver" => "mysqli"));
+
+        $queryBuilder = $connection->createQueryBuilder();
+
+        $requestBody = json_decode($request->getContent(), true);
+
+        $docNode = Parser::parse($requestBody["query"]);
+        $docNodeAsResource = $docNode->toArray(true);
+
+        $definitions = $docNodeAsResource["definitions"];
+        $selections = $definitions[0]["selectionSet"]["selections"];
+
+        $firstSelection = $selections[0];
+        $arguments = $firstSelection["arguments"];
+        $filter = self::getArgumentValue($firstSelection, "filter");
+
+        $sql = $queryBuilder->select("name")
+            ->andWhere("bla")
+            ->orWhere("oder")
+            ->getSQL();
+
+        return new JsonResponse(["filter" => $filter]);
+
+        //return new JsonResponse($queryBuilder->getConnection()->getDatabasePlatform()->getName());
+    }
+
+    //function
+
+    /**
+     * @Route(path="/filter", methods={"POST"})
+     */
+    function handleFilter(Request $request)
+    {
+        $body = json_decode($request->getContent(), true);
+
+        $sql = "WHERE";
+        $association = "";
+        $isFirstField = true;
+
+        $rootObject = [];
+
+        if ($rootObject == [])
+            return new JsonResponse(["error" => "No 'OR' or 'AND' root object given"], Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $sql = $this->buildWhere($rootObject);
+
+        if (array_key_exists("OR", $body)) {
+            $rootObject = $body["OR"];
+            $association = " OR ";
+        } else if (array_key_exists("AND", $body)) {
+            $rootObject = $body["AND"];
+            $association = " AND ";
+        }
+
+        foreach ($rootObject as $row) {
+            if (!$isFirstField)
+                $sql .= $association;
+
+            $sql .= " " . $row["field"] . " " . $row["coersionType"] . " " . $row["value"];
+
+            $isFirstField = false;
+        }
+
+        return new JsonResponse(["sql" => $sql]);
+    }
+
+    /*
+    function buildWhere($currentFilterObject, $sql = "WHERE", $association = "")
+    {
+        $e;
+
+        if (array_key_exists("OR", $body)) {
+            $rootObject = $body["OR"];
+            $association = " OR ";
+        } else if (array_key_exists("AND", $body)) {
+            $rootObject = $body["AND"];
+            $association = " AND ";
+        }
+    }
+
+    function filterObjectIsSpread($filterObject)
+    {
+        return $filterObject["type"] === "AND" || $filterObject["type"] === "OR";
+    }
+    */
+
+    //function
+
+    /**
+     * @Route(path="/file", methods={"POST"})
+     */
+    public function handleFile(Request $request)
+    {
+        return new JsonResponse([$request->headers->get("Content-Type"),
+            "isMultipart" => strpos($request->headers->get("Content-Type"), "multipart/form-data") !== false,
+            "fileCount" => $request->files->count(),
+            "strPos" => strpos($request->headers->get("Content-Type"), "multipart/form-data"),
+            "fileKeys" => $request->files->keys(),
+            "fileName" => $request->files->get("file1")->getClientOriginalName(),
+            "move" => $request->files->get("file1")->move('C:\Users\ennot\OneDrive\Desktop\Neuer Ordner', $request->files->get("file1")
+                ->getClientOriginalName())]);
+
+        return new JsonResponse($request->files->get("file1")->move('C:\Users\ennot\OneDrive\Desktop\Neuer Ordner', $request->files->get("file1")
+            ->getClientOriginalName())->guessExtension());
+
+        //return new JsonResponse($request->files->get("file1")->getName());
+    }
+
+    /**
+     * @Route(path="/graphql/{mode}", methods={"POST"})
+     */
+    public function handleGraphQL(Request $request, $mode = "")
     {
         $body = $request->getContent();
         $query = json_decode($body, true);
@@ -42,7 +156,8 @@ class DefaultController extends AbstractController
         $toplevelSelections = $toplevelObject["selectionSet"]["selections"];
 
         /** Return the DocumentNode calculated from the request query */
-        //return new JsonResponse($docNodeAsResource);
+        if ($mode === "docNode")
+            return new JsonResponse($docNodeAsResource);
 
         //return new JsonResponse(self::columnExistsInTable("sys_hersteller", "sys_maschine"));
         //return new JsonResponse(self::getCombinedTableName("sys_maschine", "document"));
@@ -70,7 +185,8 @@ class DefaultController extends AbstractController
         //return new JsonResponse($this->returnJson($definitions[0]));
 
         /** Return the calculated SQL query for the request */
-        //return new JsonResponse(["sql" => $this->returnQuerySQL($definitions[0]), "selectedObjects" => $this->selectedObjects]);
+        if ($mode === "sql")
+            return new JsonResponse(["sql" => $this->returnQuerySQL($definitions[0]), "selectedObjects" => $this->selectedObjects]);
 
         //$query = $this->returnQuerySQL($definitions[0])[0];
         //return new JsonResponse(["query" => $query]);
@@ -95,7 +211,7 @@ class DefaultController extends AbstractController
             $result = $this->queryDb($query);
 
             if ($error = $this->connection->error)
-                return new JsonResponse(["error" => $error], Response::HTTP_UNPROCESSABLE_ENTITY);
+                return new JsonResponse(["selectedObjects" => $this->selectedObjects, "sql" => $query, "debugError" => $error], Response::HTTP_UNPROCESSABLE_ENTITY);
 
             $this->result = $result->fetch_assoc();
 
@@ -224,9 +340,16 @@ class DefaultController extends AbstractController
 
     function returnSQL($queryNode)
     {
-        $sql = $this->addSqlFields($queryNode);
+        //$sql = $this->addSqlFields($queryNode);
+        $sqlAndSelectedObjects = $this->addSqlFields($queryNode);
+
+        $sql = $sqlAndSelectedObjects["sql"];
+        $selectedObjects = $sqlAndSelectedObjects["selectedObjects"];
+
         $sql .= " FROM " . $queryNode["name"]["value"];
-        $sql .= $this->addJoins();
+
+        //$sql .= $this->addJoins();
+        $sql .= $this->addJoins("one-to-one", $selectedObjects);
 
         if (self::hasArgument($queryNode, "id"))
             $sql .= $this->addIdClause($queryNode["name"]["value"], self::getArgumentValue($queryNode, "id"));
@@ -249,7 +372,7 @@ class DefaultController extends AbstractController
                 return $argument["value"]["value"];
         }
 
-        return -1;
+        return null;
     }
 
     function hasArgument($node, $argumentKey)
@@ -288,23 +411,27 @@ class DefaultController extends AbstractController
     }
 
 
-    function addJoins()
+    function addJoins($mode, $selectedObjects)
     {
         $sql = "";
-        foreach ($this->selectedObjects as $obj) {
+        //foreach ($this->selectedObjects as $obj) {
+        foreach ($selectedObjects as $obj) {
             switch ($obj["type"]) {
                 case "one-to-one":
+                    if ($mode != "one-to-one") break;
+
                     $sql .= " LEFT JOIN " . $obj["to"] . " ON " . $obj["to"] . ".id = " . $obj["from"] . "." . $obj["to"] . "_id";
                     break;
 
-                /*
-            case "many-to-many":
-                $from = $obj["from"];
-                $to = $obj["to"];
-                $combinedTableName = self::getCombinedTableName($from, $to);
-                $sql .= " LEFT JOIN $combinedTableName ON $from" . ".id = $combinedTableName" . "." . $from . "_id";
-                $sql .= " LEFT JOIN $to ON $combinedTableName" . "." . $to . "_id = " . $to . ".id";
-                */
+                case "many-to-many" && $mode == "many-to-many":
+                    if ($mode != "many-to-many") break;
+
+                    $from = $obj["from"];
+                    $to = $obj["to"];
+                    $combinedTableName = self::getCombinedTableName($from, $to);
+                    $sql .= " LEFT JOIN $combinedTableName ON $from" . ".id = $combinedTableName" . "." . $from . "_id";
+                    $sql .= " LEFT JOIN $to ON $combinedTableName" . "." . $to . "_id = " . $to . ".id";
+
             }
         }
         return $sql;
@@ -317,10 +444,16 @@ class DefaultController extends AbstractController
     }
 
 
-    function addSqlFields($currentNode, $branchDepth = 0, $sql = "SELECT ", $isFirstField = true)
+    //function addSqlFields($currentNode, $branchDepth = 0, $sql = "SELECT ", $isFirstField = true, $selectedObjects = [])
+    function addSqlFields($currentNode, $branchDepth = 0, $isFirstField = true, $sqlAndSelectedObjects = ["sql" => "SELECT ", "selectedObjects" => []])
     {
         $selections = $currentNode["selectionSet"]["selections"];
         $rootFieldName = $currentNode["name"]["value"];
+
+        $sql = $sqlAndSelectedObjects["sql"];
+        $selectedObjects = $sqlAndSelectedObjects["selectedObjects"];
+
+        //$selectedObjects = [];
         //$sql .= "SELECT ";
         //return $selections;
         // Add fields to SQL query
@@ -343,13 +476,24 @@ class DefaultController extends AbstractController
             if (self::isSpread($field)) {
                 // Requested fieldname exists as column in table
                 if (self::columnExistsInTable($fieldName . "_id", $rootFieldName)) {
-                    array_push($this->selectedObjects, ["type" => "one-to-one", "from" => $rootFieldName, "to" => $fieldName]);
+                    //if (!in_array(["type" => "one-to-one", "from" => $rootFieldName, "to" => $fieldName], $this->selectedObjects))
+                    //    array_push($this->selectedObjects, ["type" => "one-to-one", "from" => $rootFieldName, "to" => $fieldName]);
 
-                    $sql .= $this->addSqlFields($field, $branchDepth + 1, "", $isFirstField);
+                    if (!in_array(["type" => "one-to-one", "from" => $rootFieldName, "to" => $fieldName], $selectedObjects))
+                        array_push($selectedObjects, ["type" => "one-to-one", "from" => $rootFieldName, "to" => $fieldName]);
+
+                    //$sql .= $this->addSqlFields($field, $branchDepth + 1, "", $isFirstField, $selectedObjects)["sql"];
+                    $new = $this->addSqlFields($field, $branchDepth, $isFirstField, ["sql" => $sql, "selectedObjects" => $selectedObjects]);
+
+                    $sql = $new["sql"];
+                    $selectedObjects = $new["selectedObjects"];
+
                 } else {
                     // Many to many (for now) TODO
-
-                    array_push($this->selectedObjects, ["type" => "many-to-many", "from" => $rootFieldName, "to" => $fieldName]);
+                    //if (!in_array(["type" => "many-to-many", "from" => $rootFieldName, "to" => $fieldName], $this->selectedObjects))
+                    //    array_push($this->selectedObjects, ["type" => "many-to-many", "from" => $rootFieldName, "to" => $fieldName]);
+                    if (!in_array(["type" => "many-to-many", "from" => $rootFieldName, "to" => $fieldName], $selectedObjects))
+                        array_push($selectedObjects, ["type" => "many-to-many", "from" => $rootFieldName, "to" => $fieldName]);
                 }
             } else {
                 // Current node is not object but scalar type field
@@ -361,11 +505,13 @@ class DefaultController extends AbstractController
                 $isFirstField = false;
             }
         }
-        return $sql;
+
+        //return $sql;
+        return ["sql" => $sql, "selectedObjects" => $selectedObjects];
     }
 
 
-    function returnJson($currentNode, $branchDepth = 0, $parentNodeName = "", $resultSet = [])
+    function returnJson($currentNode, $branchDepth = 0, $parentNodeName = "", $result = [])
     {
         $selections = $currentNode["selectionSet"]["selections"];
         $newObj = [];
@@ -378,21 +524,22 @@ class DefaultController extends AbstractController
                 $key = $parentNodeName . "." . $fieldName;
                 //if (array_key_exists($key, $resultSet))
                 if (self::columnExistsInTable($fieldName . "_id", $parentNodeName))
-                    $newObj[$fieldName] = $this->returnJson($field, $branchDepth + 1, $fieldName, $resultSet);
+                    $newObj[$fieldName] = $this->returnJson($field, $branchDepth + 1, $fieldName, $result);
                 else
                     //$newObj[$fieldName] = $this->addSqlFields($currentNode);
                     //$newObj[$fieldName] = "My id is '" . $resultSet[$parentNodeName . ".id"] . "', parentNodeName=" . $parentNodeName;
 
                     //$newObj[$fieldName] = array();
 
-                    $newObj[$fieldName] = self::getManyToManyAsArray($field, $fieldName, $parentNodeName, $resultSet[$parentNodeName . ".id"]);
+                    $newObj[$fieldName] = self::getManyToManyAsArray($field, $fieldName, $parentNodeName, $result[$parentNodeName . ".id"]);
             } else {
                 //$newObj[$fieldName] = null;
                 //$newObj[$fieldName] = $parentNodeName;
 
                 //if (array_key_exists($key, $this->result))
                 //    $newObj[$fieldName] = $this->result[$parentNodeName . "." . $fieldName];
-                $newObj[$fieldName] = $resultSet[$parentNodeName . "." . $fieldName];
+
+                $newObj[$fieldName] = $result[$parentNodeName . "." . $fieldName];
 
                 //$newObj[$fieldName] = json_encode($this->selectedObjects);
                 //$newObj[$fieldName] = json_encode(self::createManyToManyQuery());
@@ -409,7 +556,13 @@ class DefaultController extends AbstractController
     function getManyToManyAsArray($node, $fieldName, $parentNodeName, $nodeId)
     {
         //$selections = $node["selectionSet"]["selections"];
-        $sql = $this->addSqlFields($node);
+
+        //$sql = $this->addSqlFields($node);
+        $sqlAndSelectedObjects = $this->addSqlFields($node);
+
+        $sql = $sqlAndSelectedObjects["sql"];
+        $selectedObjects = $sqlAndSelectedObjects["selectedObjects"];
+
         $sql .= " FROM " . $parentNodeName;
 
         $from = $parentNodeName;
@@ -421,10 +574,23 @@ class DefaultController extends AbstractController
         $sql .= " INNER JOIN $combinedTableName ON $from" . ".id = $combinedTableName" . "." . $from . "_id";
         $sql .= " INNER JOIN $to ON $combinedTableName" . "." . $to . "_id = " . $to . ".id";
 
+        //$sql .= $this->addJoins("many-to-many", $selectedObjects);
+
+        //var_dump(["nodeId=$nodeId" => $this->selectedObjects]);
+
+        $sql .= $this->addJoins("one-to-one", $selectedObjects);
+
         $sql .= $this->addIdClause($parentNodeName, $nodeId);
+
 
         if (self::hasArgument($node, "first"))
             $sql .= $this->addLimit(self::getArgumentValue($node, "first"));
+
+        if (self::hasArgument($node, "offset"))
+            $sql .= $this->addOffset(self::getArgumentValue($node, "offset"));
+
+        //var_dump(["nodeId=$nodeId" => [$sql, $selectedObjects]]);
+        //exit;
 
         //return $sql;
 
@@ -433,7 +599,12 @@ class DefaultController extends AbstractController
         $resultArray = [];
 
         while ($row = $result->fetch_assoc()) {
-            array_push($resultArray, $row);
+            //var_dump($row);
+            //exit;
+
+            array_push($resultArray, $this->returnJson($node, 0, $fieldName, $row));
+
+            //array_push($resultArray, $row);
         }
 
         //return $sql;
